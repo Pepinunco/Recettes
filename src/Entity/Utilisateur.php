@@ -20,11 +20,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 30)]
-    private ?string $nom = null;
-
-    #[ORM\Column(length: 30)]
-    private ?string $prenom = null;
     #[ORM\Column(length: 180)]
     private ?string $email = null;
 
@@ -206,26 +201,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
-    }
-
-    public function getNom(): ?string
-    {
-        return $this -> nom;
-    }
-
-    public function setNom(?string $nom): void
-    {
-        $this -> nom = $nom;
-    }
-
-    public function getPrenom(): ?string
-    {
-        return $this -> prenom;
-    }
-
-    public function setPrenom(?string $prenom): void
-    {
-        $this -> prenom = $prenom;
     }
 
 }

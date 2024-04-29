@@ -24,6 +24,9 @@ class Ingredient
     #[ORM\OneToMany(targetEntity: RecetteIngredient::class, mappedBy: 'Ingredient', orphanRemoval: true)]
     private Collection $recetteIngredients;
 
+    #[ORM\Column(length: 255)]
+    private ?string $unite = null;
+
     public function __construct()
     {
         $this->recetteIngredients = new ArrayCollection();
@@ -72,6 +75,18 @@ class Ingredient
                 $recetteIngredient->setIngredient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUnite(): ?string
+    {
+        return $this->unite;
+    }
+
+    public function setUnite(string $unite): static
+    {
+        $this->unite = $unite;
 
         return $this;
     }

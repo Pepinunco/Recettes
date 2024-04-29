@@ -21,28 +21,57 @@ class RecetteRepository extends ServiceEntityRepository
         parent::__construct($registry, Recette::class);
     }
 
-    //    /**
-    //     * @return Recette[] Returns an array of Recette objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('r.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findNewestRecipes()
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder->addOrderBy('r.dateCreated','ASC');
+        $query = $queryBuilder->getQuery();
 
-    //    public function findOneBySomeField($value): ?Recette
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $query->setMaxResults(4);
+        return $query->getResult();
+    }
+
+    public function findBestRecipes()
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder->andWhere('r.Note > 4');
+        $queryBuilder->addOrderBy('r.Note','DESC');
+        $query = $queryBuilder->getQuery();
+
+        $query->setMaxResults(4);
+        return $query->getResult();
+    }
+
+    public function findEntrees()
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder->andWhere('r.Categorie = 1');
+        $queryBuilder->addOrderBy('r.Note', 'DESC');
+        $query = $queryBuilder->getQuery();
+
+        $query->setMaxResults(10);
+        return $query->getResult();
+    }
+
+    public function findPlats()
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder->andWhere('r.Categorie = 2');
+        $queryBuilder->addOrderBy('r.Note', 'DESC');
+        $query = $queryBuilder->getQuery();
+
+        $query->setMaxResults(10);
+        return $query->getResult();
+    }
+
+    public function findDesserts()
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder->andWhere('r.Categorie = 3');
+        $queryBuilder->addOrderBy('r.Note', 'DESC');
+        $query = $queryBuilder->getQuery();
+
+        $query->setMaxResults(10);
+        return $query->getResult();
+    }
 }

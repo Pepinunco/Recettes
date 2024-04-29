@@ -16,9 +16,6 @@ class RecetteIngredient
     #[ORM\Column]
     private ?int $Quantite = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $Unite = null;
-
     #[ORM\ManyToOne(inversedBy: 'ingredients')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Recette $recette = null;
@@ -40,18 +37,6 @@ class RecetteIngredient
     public function setQuantite(int $Quantite): static
     {
         $this->Quantite = $Quantite;
-
-        return $this;
-    }
-
-    public function getUnite(): ?string
-    {
-        return $this->Unite;
-    }
-
-    public function setUnite(string $Unite): static
-    {
-        $this->Unite = $Unite;
 
         return $this;
     }

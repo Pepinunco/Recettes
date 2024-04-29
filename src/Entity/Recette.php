@@ -54,6 +54,9 @@ class Recette
     #[ORM\OneToMany(targetEntity: RecetteIngredient::class, mappedBy: 'recette', orphanRemoval: true)]
     private Collection $ingredients;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateCreated = null;
+
     public function __construct()
     {
         $this->Commentaires = new ArrayCollection();
@@ -217,6 +220,18 @@ class Recette
                 $ingredient->setRecette(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateCreated(): ?\DateTimeInterface
+    {
+        return $this->dateCreated;
+    }
+
+    public function setDateCreated(\DateTimeInterface $dateCreated): static
+    {
+        $this->dateCreated = $dateCreated;
 
         return $this;
     }

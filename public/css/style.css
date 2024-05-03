@@ -1,0 +1,22 @@
+/***************GLOBAL***************/
+:root{
+    --primary: #467F0E;
+    --primaryLight: #99D45E;
+    --white: #f4e0df;
+    --black:#3f3735;
+}
+/***************GLOBAL***************/
+
+/***************BASE***************/
+/***HEADER***/
+nav{
+
+}
+/***MAIN***/
+.body-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/***FOOTER***/
+/***************MAIN***************/

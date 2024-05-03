@@ -31,7 +31,7 @@ class Recette
     #[ORM\Column(type: Types::TEXT)]
     private ?string $Instructions = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?float $Note = null;
 
     #[ORM\ManyToOne(inversedBy: 'recettes')]

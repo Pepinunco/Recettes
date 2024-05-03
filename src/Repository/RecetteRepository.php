@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Recette;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -24,7 +25,7 @@ class RecetteRepository extends ServiceEntityRepository
     public function findNewestRecipes()
     {
         $queryBuilder = $this->createQueryBuilder('r');
-        $queryBuilder->addOrderBy('r.dateCreated','ASC');
+        $queryBuilder->addOrderBy('r.dateCreated','DESC');
         $query = $queryBuilder->getQuery();
 
         $query->setMaxResults(4);
@@ -73,5 +74,20 @@ class RecetteRepository extends ServiceEntityRepository
 
         $query->setMaxResults(10);
         return $query->getResult();
+    }
+
+    public function findRecipeById(int $id)
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder->select('r', 'ri', 'c', 'a', 'ing');
+        $queryBuilder->leftJoin('r.ingredients', 'ri');
+        $queryBuilder->leftJoin('ri.Ingredient','ing');
+        $queryBuilder->leftJoin('r.Commentaires', 'c');
+        $queryBuilder->leftJoin('r.Auteur', 'a');
+        $queryBuilder->where('r.id = :id');
+        $queryBuilder->setParameter('id',$id);
+        $query = $queryBuilder->getQuery();
+
+        return $query->getOneOrNullResult();
     }
 }

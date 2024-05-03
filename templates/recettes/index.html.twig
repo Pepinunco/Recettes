@@ -1,19 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello RecettesController!{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/wamp64/www/Recettes/src/Controller/RecettesController.php</code></li>
-        <li>Your template at <code>C:/wamp64/www/Recettes/templates/recettes/index.html.twig</code></li>
-    </ul>
-</div>
+    <section class="meilleures-recettes">
+        <h2>Meilleures Recettes</h2>
+        {% for recette in meilleuresRecettes %}
+            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+        {% endfor %}
+    </section>
+    <section class="nouvelles-recettes">
+        <h2>Nouvelles Recettes</h2>
+        {% for recette in nouvellesRecettes %}
+            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+        {% endfor %}
+    </section>
 {% endblock %}

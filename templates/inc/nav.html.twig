@@ -1,9 +1,9 @@
 <nav>
     {% if app.user %}
         <ul>
-            <li>Entrées</li>
-            <li>Plats</li>
-            <li>Desserts</li>
+            <li><a href="{{ path('app_entrees') }}">Entrées</a></li>
+            <li><a href="{{ path('app_plats') }}">Plats</a></li>
+            <li><a href="{{ path('app_desserts') }}">Desserts</a></li>
             <li>Recherche Specifique</li>
         </ul>
     {% endif %}

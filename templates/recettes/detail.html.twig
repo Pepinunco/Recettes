@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+{% block title %}{{ recette.nom }}{% endblock %}
+
+{% block body %}
+    <section class="detail-recette">
+        <h1>{{ recette.nom }}</h1>
+        <div>Auteur : {{ recette.Auteur.pseudo}}</div>
+        <div>Note : {{ recette.note }}</div>
+        <div>
+            Ingredients :
+            <ul>
+                {% for ingredient in recette.ingredients %}
+                    <li>{{ ingredient.Ingredient.nom }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div>Portions : {{ recette.portions }}</div>
+        <div>Instructions : {{ recette.instructions }}</div>
+        <div>Temps de preparation : {{ recette.tempsPreparation | date("H:i") }}</div>
+        <div>Temps de cuisson : {{ recette.tempsCuisson | date("H:i") }}</div>
+        <div>Commentaires :
+            <ul>
+                {% for commentaire in recette.commentaires %}
+                    <li>{{ commentaire.texte }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+{% endblock %}
+
+

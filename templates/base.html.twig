@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>{% block title %}Miam{% endblock %}</title>
+        <link rel="icon" href="{{ asset('img/miamIcon.png') }}">
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
             <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -14,8 +15,9 @@
         <header>
             {% include 'inc/nav.html.twig' %}
         </header>
+        <div class="body-container">
         {% block body %}
-
         {% endblock %}
+        </div>
     </body>
 </html>

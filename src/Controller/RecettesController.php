@@ -92,4 +92,5 @@ class RecettesController extends AbstractController
         return  $this->render('recettes/nouvelleRecette.html.twig',
             ['recetteForm'=> $recetteForm]);
     }
+
 }

@@ -18,5 +18,24 @@ nav{
     justify-content: center;
     align-items: center;
 }
+/*************Profil*************/
+h1 {
+    text-align: center;
+}
+
+
+
+
 /***FOOTER***/
 /***************MAIN***************/
+
+/***************Profil*************/
+.photo{
+    position: absolute;
+}
+
+.photo img{
+    width: 150px;
+    display: flex;
+    justify-content: flex-end;
+}

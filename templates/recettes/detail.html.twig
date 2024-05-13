@@ -4,7 +4,7 @@
 {% block body %}
     <section class="detail-recette">
         <h1>{{ recette.nom }}</h1>
-        <div>Auteur : {{ recette.Auteur.pseudo}}</div>
+        <div><a href="{{ path('otherProfile', {'pseudo': 'x'}) }}">Auteur : {{ recette.Auteur.pseudo}}</a></div>
         <div>Note : {{ recette.note }}</div>
         <div>
             Ingredients :

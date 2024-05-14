@@ -5,20 +5,18 @@
 {% endblock %}
 {% block body %}
 
-    <h1>Profil de {{ user }}</h1>
-    {% if user.PhotoProfil %}
+    <h1>Profil de {{ utilisateur.pseudo }}</h1>
+    {% if utilisateur.PhotoProfil %}
         <aside class="photo">
-            <img src="{{ asset('img/PhotoProfil/' ~ user.PhotoProfil) }}" alt="Photo de profil">
+            <img src="{{ asset('img/PhotoProfil/' ~ utilisateur.PhotoProfil) }}" alt="Photo de profil">
         </aside>
     {% endif %}
 
-    <div></div>
-    <section >
-        <button onclick="window.location.href='{{ path('app_accueil') }}'" class="btn">Retour</button>
-    </section>
-    {{ form_end(editForm) }}
+    <div>
+        <h2>Mes Recettes</h2>
+        {% for recette in utilisateur.recettes %}
+            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+        {% endfor %}
+    </div>
 
-    {%for recette in user.recettes %}
-        <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
-    {% endfor %}
 {% endblock %}

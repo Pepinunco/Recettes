@@ -6,8 +6,10 @@ use App\Entity\Utilisateur;
 use App\Form\EditPasswordFormType;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
@@ -21,15 +23,17 @@ class ProfilManager
     private SluggerInterface $slugger;
     private UserPasswordHasherInterface $passwordEncoder;
     private UtilisateurRepository $utilisateurRepository;
+    private Security $security;
 
 
-    public function __construct(EntityManagerInterface $entityManager, Filesystem $filesystem, SluggerInterface $slugger, UserPasswordHasherInterface $passwordEncoder, UtilisateurRepository $utilisateurRepository)
+    public function __construct(EntityManagerInterface $entityManager, Filesystem $filesystem, SluggerInterface $slugger, UserPasswordHasherInterface $passwordEncoder, UtilisateurRepository $utilisateurRepository, Security $security)
     {
         $this->entityManager = $entityManager;
         $this->filesystem = $filesystem;
         $this->slugger = $slugger;
         $this->passwordEncoder = $passwordEncoder;
         $this->utilisateurRepository = $utilisateurRepository;
+        $this->security = $security;
     }
 
     public function editProfil(Utilisateur $user, UploadedFile $profilePictureFile=null)
@@ -82,6 +86,22 @@ class ProfilManager
 
     public function getUserByPseudo(string $pseudo): ?Utilisateur
     {
-        return $this->utilisateurRepository->findOneBy(['Pseudo' =>$pseudo]);
+        return $this->utilisateurRepository->findOneBy(['Pseudo' => $pseudo]);
+    }
+
+    public function deleteUtilisateur(int $id): void
+    {
+        $user = $this->entityManager->getRepository (Utilisateur::class)->find ($id);
+
+        if (!$user) {
+            throw new \Exception('Utilisateur non trouvé.');
+        }
+
+        if (!$this->security->isGranted('DELETE', $user)) {
+            throw new AccessDeniedException('Accès refusé.');
+        }
+
+        $this->entityManager->remove($user);
+        $this->entityManager->flush();
     }
 }

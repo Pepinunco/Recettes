@@ -9,33 +9,50 @@
 
 /***************BASE***************/
 /***HEADER***/
+header{
+    background-color: #99D45E;
+    padding: 20px;
+}
 nav{
 
 }
-/***MAIN***/
-.body-container{
+
+nav ul {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-around;
 }
+
+nav li {
+    list-style-type: none;
+
+}
+
+nav a {
+    color: #3f3735;
+    text-decoration: none;
+}
+/***MAIN***/
+.body-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+
 /*************Profil*************/
-h1 {
-    text-align: center;
+
 }
 
-
-
-
-/***FOOTER***/
-/***************MAIN***************/
-
-/***************Profil*************/
 .photo{
     position: absolute;
 }
 
 .photo img{
     width: 150px;
-    display: flex;
-    justify-content: flex-end;
 }
+
+
+/***FOOTER***/
+/***************MAIN***************/
+
+

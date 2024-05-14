@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 
+use App\Entity\Utilisateur;
 use App\Form\EditFormType;
 use App\Form\EditPasswordFormType;
 use App\Repository\UtilisateurRepository;
 use App\services\ProfilManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,15 +80,28 @@ class ProfilController extends AbstractController
     #[Route("/otherProfile/{pseudo}", name: "otherProfile", methods: ['GET'])]
     public function otherProfile(string $pseudo, ProfilManager $profilManager):Response
     {
-        $user = $profilManager->getUserByPseudo ($pseudo);
-
-        if ($user) {
+        $utilisateur = $profilManager->getUserByPseudo ($pseudo);
+        if (!$utilisateur) {
             throw $this->createNotFoundException ('Utilisateur non trouvé.');
         }
 
         return $this->render('profil/other_profile_template.html.twig', [
-            'user' => $user
+            'utilisateur' => $utilisateur
         ]);
 
+    }
+
+
+    #[Route("deleteUtilisateur/{id}", name: 'delete_Utilisateur', methods:['POST', 'DELETE'])]
+    public function deleteUtilisateur(int $id): Response
+    {
+        try {
+            $this->manager->deleteUtilisateur($id);
+            $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+        } catch (\Exception $e) {
+            $this->addFlash('error', $e->getMessage());
+        }
+
+        return $this->redirectToRoute('app_accueil');
     }
 }

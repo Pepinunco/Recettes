@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %}Recherche{% endblock %}
+
+{% block body %}
+<h1>Recherche</h1>
+    {{ form_start(searchForm) }}
+    <button type="submit">Chercher</button>
+    {{ form_end(searchForm) }}
+
+    {% if recettes is not empty %}
+
+        <h2>Resultats</h2>
+        <ul>
+            {% for recette in recettes %}
+                <li><a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a></li>
+            {% endfor %}
+        </ul>
+        
+    {% endif %}
+{% endblock %}
+
+

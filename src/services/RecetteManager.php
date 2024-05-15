@@ -2,6 +2,7 @@
 
 namespace App\services;
 
+use App\DTO\SearchDTO;
 use App\Entity\Recette;
 use App\Entity\Utilisateur;
 use App\Form\RecetteType;
@@ -61,29 +62,31 @@ class RecetteManager
         return $this->recetteRepository->findRecipeById($id);
     }
 
-    public function createRecipeForm(UserInterface $user,
-                                     Recette $recette): FormInterface
-    {
-
-        $recette->setAuteur($user);
-        $recette->setDateCreated(new \DateTime());
-
-        return $this->formFactory->create(RecetteType::class, $recette);
-
-    }
-
     public function handleRecipeForm(Request $request,
                                      FormInterface $recetteForm,
-                                     $recette)
+                                     $recette,
+                                     UserInterface $user,)
     {
         $recetteForm->handleRequest($request);
 
         if ($recetteForm->isSubmitted() && $recetteForm->isValid())
         {
+            $recette->setAuteur($user);
+            $recette->setDateCreated(new \DateTime());
             $this->entityManager->persist($recette);
             $this->entityManager->flush();
 
             return $recette;
+        }
+        return null;
+    }
+
+    public function handleSearchForm(Request $request, FormInterface $searchForm, SearchDTO $searchDTO)
+    {
+        $searchForm->handleRequest($request);
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid()){
+            return  $this->recetteRepository->findRecipesBySearch($searchDTO->getSearchTerm(), $searchDTO->getIngredientFilter());
         }
         return null;
     }

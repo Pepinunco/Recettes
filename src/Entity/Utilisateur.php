@@ -50,25 +50,28 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'Auteur', orphanRemoval: true)]
     private Collection $commentaires;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $PhotoProfil = null;
+
     public function __construct()
     {
-        $this->recettes = new ArrayCollection();
-        $this->commentaires = new ArrayCollection();
+        $this -> recettes = new ArrayCollection();
+        $this -> commentaires = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this -> id;
     }
 
     public function getEmail(): ?string
     {
-        return $this->email;
+        return $this -> email;
     }
 
     public function setEmail(string $email): static
     {
-        $this->email = $email;
+        $this -> email = $email;
 
         return $this;
     }
@@ -80,21 +83,21 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this -> email;
     }
 
     /**
+     * @return list<string>
      * @see UserInterface
      *
-     * @return list<string>
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
+        $roles = $this -> roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return array_unique ( $roles );
     }
 
     /**
@@ -102,7 +105,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setRoles(array $roles): static
     {
-        $this->roles = $roles;
+        $this -> roles = $roles;
 
         return $this;
     }
@@ -112,12 +115,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return $this->password;
+        return $this -> password;
     }
 
     public function setPassword(string $password): static
     {
-        $this->password = $password;
+        $this -> password = $password;
 
         return $this;
     }
@@ -133,12 +136,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getPseudo(): ?string
     {
-        return $this->Pseudo;
+        return $this -> Pseudo;
     }
 
     public function setPseudo(string $Pseudo): static
     {
-        $this->Pseudo = $Pseudo;
+        $this -> Pseudo = $Pseudo;
 
         return $this;
     }
@@ -148,14 +151,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getRecettes(): Collection
     {
-        return $this->recettes;
+        return $this -> recettes;
     }
 
     public function addRecette(Recette $recette): static
     {
-        if (!$this->recettes->contains($recette)) {
-            $this->recettes->add($recette);
-            $recette->setAuteur($this);
+        if (!$this -> recettes -> contains ( $recette )) {
+            $this -> recettes -> add ( $recette );
+            $recette -> setAuteur ( $this );
         }
 
         return $this;
@@ -163,10 +166,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeRecette(Recette $recette): static
     {
-        if ($this->recettes->removeElement($recette)) {
+        if ($this -> recettes -> removeElement ( $recette )) {
             // set the owning side to null (unless already changed)
-            if ($recette->getAuteur() === $this) {
-                $recette->setAuteur(null);
+            if ($recette -> getAuteur () === $this) {
+                $recette -> setAuteur ( null );
             }
         }
 
@@ -178,14 +181,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getCommentaires(): Collection
     {
-        return $this->commentaires;
+        return $this -> commentaires;
     }
 
     public function addCommentaire(Commentaire $commentaire): static
     {
-        if (!$this->commentaires->contains($commentaire)) {
-            $this->commentaires->add($commentaire);
-            $commentaire->setAuteur($this);
+        if (!$this -> commentaires -> contains ( $commentaire )) {
+            $this -> commentaires -> add ( $commentaire );
+            $commentaire -> setAuteur ( $this );
         }
 
         return $this;
@@ -193,14 +196,27 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeCommentaire(Commentaire $commentaire): static
     {
-        if ($this->commentaires->removeElement($commentaire)) {
+        if ($this -> commentaires -> removeElement ( $commentaire )) {
             // set the owning side to null (unless already changed)
-            if ($commentaire->getAuteur() === $this) {
-                $commentaire->setAuteur(null);
+            if ($commentaire -> getAuteur () === $this) {
+                $commentaire -> setAuteur ( null );
             }
         }
 
         return $this;
     }
 
+    public function getPhotoProfil(): ?string
+    {
+        return $this->PhotoProfil;
+    }
+
+    public function setPhotoProfil(?string $PhotoProfil): static
+    {
+        $this->PhotoProfil = $PhotoProfil;
+
+        return $this;
+    }
 }
+
+

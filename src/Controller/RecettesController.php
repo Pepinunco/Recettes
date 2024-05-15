@@ -90,6 +90,7 @@ class RecettesController extends AbstractController
         {
             return $this->redirectToRoute('app_ajoutIngredients', ['id'=>$recette->getId()]);
         }
+
         return  $this->render('recettes/nouvelleRecette.html.twig',
             ['recetteForm'=> $recetteForm]);
     }

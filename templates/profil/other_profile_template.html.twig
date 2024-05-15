@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/normalize.css') }}">
+{% endblock %}
+{% block body %}
+
+    <h1>Profil de {{ utilisateur.pseudo }}</h1>
+    {% if utilisateur.PhotoProfil %}
+        <aside class="photo">
+            <img src="{{ asset('img/PhotoProfil/' ~ utilisateur.PhotoProfil) }}" alt="Photo de profil">
+        </aside>
+    {% endif %}
+
+    <div>
+        <h2>Mes Recettes</h2>
+        {% for recette in utilisateur.recettes %}
+            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+        {% endfor %}
+    </div>
+
+{% endblock %}

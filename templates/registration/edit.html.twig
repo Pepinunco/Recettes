@@ -24,12 +24,10 @@
     </div>
     <div></div>
     <section >
-        <button type="submit" class="btn">Enregistrer</button>
+
         <button><a href="{{ path('editPassword') }}">Modifier le mot de passe</a></button>
-        <form action="{{ path('delete_Utilisateur', {'id': user.id}) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
-            <input type="hidden" name="_method" value="DELETE">
-            <button type="submit" class="btn btn-danger">Supprimer le compte</button>
-        </form>
+        {{ form_widget(editForm.Supprimer) }}
+        {{ form_widget(editForm.Enregistrer) }}
         <button onclick="window.location.href='{{ path('app_accueil') }}'" class="btn">Retour</button>
     </section>
     {{ form_end(editForm) }}
@@ -37,6 +35,7 @@
     <h2>Mes recettes</h2>
     {%for recette in user.recettes %}
         <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+        <button><a href="{{ path('app_nouvelleRecette') }}">Ajouter une recette</a></button>
     {% endfor %}
 {% endblock %}
 

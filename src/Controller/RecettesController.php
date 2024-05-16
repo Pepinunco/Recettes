@@ -2,13 +2,16 @@
 
 namespace App\Controller;
 
+use App\DTO\SearchDTO;
 use App\Entity\Recette;
+use App\Form\RecetteIngredientType;
 use App\Form\RecetteType;
+use App\Form\SearchFormType;
 use App\services\RecetteManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 class RecettesController extends AbstractController
 {
@@ -81,16 +84,42 @@ class RecettesController extends AbstractController
     {
         $user = $this->getUser();
         $recette = new Recette();
-        $recetteForm = $this->manager->createRecipeForm($user, $recette);
+        $recetteForm = $this->createForm(RecetteType::class, $recette);
 
-        if ($this->manager->handleRecipeForm($request,$recetteForm,$recette))
+        if ($this->manager->handleRecipeForm($request,$recetteForm,$recette, $user))
         {
-            $this->addFlash('success', 'Recette ajoutée');
-            return $this->redirectToRoute('app_accueil');
+            return $this->redirectToRoute('app_ajoutIngredients', ['id'=>$recette->getId()]);
         }
 
         return  $this->render('recettes/nouvelleRecette.html.twig',
             ['recetteForm'=> $recetteForm]);
     }
 
+    #[Route('/ajoutIngredient/{id}', name: 'app_ajoutIngredients')]
+    public function ajoutIngredients(int $id): \Symfony\Component\HttpFoundation\RedirectResponse|Response
+    {
+        $ingredientForm = $this->createForm(RecetteIngredientType::class);
+        if ($ingredientForm->isSubmitted() && $ingredientForm->isValid())
+        {
+            return $this->redirectToRoute('app_accueil');
+        }
+        return $this->render('recettes/ajoutIngredients.html.twig',
+        ['ingredientForm'=>$ingredientForm->createView()]);
+    }
+    #[Route ('/recherche', name: 'app_recherche')]
+    public function recherche(Request $request): Response
+    {
+        $searchDTO = new SearchDTO();
+        $searchForm = $this->createForm(SearchFormType::class, $searchDTO);
+
+        $recettes = $this->manager->handleSearchForm($request,$searchForm,$searchDTO);
+        if ($recettes){
+            $searchDTO = new SearchDTO();
+            $searchForm = $this->createForm(SearchFormType::class, $searchDTO);
+        }
+        return $this->render('recettes/recherche.html.twig',
+            ['searchForm'=>$searchForm->createView(),
+                'recettes'=>$recettes
+        ]);
+    }
 }

@@ -90,4 +90,23 @@ class RecetteRepository extends ServiceEntityRepository
 
         return $query->getOneOrNullResult();
     }
+
+    public function findRecipesBySearch($searchTerm, $ingredientFilter)
+    {
+        $queryBuilder = $this->createQueryBuilder('r');
+        $queryBuilder->leftJoin('r.ingredients', 'ri');
+        $queryBuilder->leftJoin('ri.Ingredient', 'i');
+
+        if ($searchTerm){
+            $queryBuilder->andWhere('r.Nom LIKE :searchTerm');
+            $queryBuilder->setParameter('searchTerm','%'.$searchTerm. '%');
+        }
+
+        if ($ingredientFilter){
+            $queryBuilder->andWhere('i.id = :ingredientId');
+            $queryBuilder->setParameter('ingredientId', $ingredientFilter);
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

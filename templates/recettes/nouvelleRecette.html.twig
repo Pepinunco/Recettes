@@ -3,7 +3,14 @@
 
 {% block body %}
     {{ form_start(recetteForm) }}
-    <button type="submit">Créer</button>
+    {{ form_row(recetteForm.Nom) }}
+    {{ form_row(recetteForm.TempsPreparation) }}
+    {{ form_row(recetteForm.TempsCuisson) }}
+    {{ form_row(recetteForm.Portions) }}
+    {{ form_row(recetteForm.Instructions) }}
+    {{ form_row(recetteForm.Categorie) }}
+
+    <button type="submit">Ajouter des ingredients</button>
     {{ form_end(recetteForm) }}
 {% endblock %}
 

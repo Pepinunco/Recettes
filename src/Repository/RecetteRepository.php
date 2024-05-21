@@ -5,7 +5,9 @@ namespace App\Repository;
 use App\Entity\Recette;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use http\Env\Request;
 
 /**
  * @extends ServiceEntityRepository<Recette>
@@ -35,7 +37,6 @@ class RecetteRepository extends ServiceEntityRepository
     public function findBestRecipes()
     {
         $queryBuilder = $this->createQueryBuilder('r');
-        $queryBuilder->andWhere('r.Note > 4');
         $queryBuilder->addOrderBy('r.Note','DESC');
         $query = $queryBuilder->getQuery();
 
@@ -43,37 +44,40 @@ class RecetteRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    public function findEntrees()
+    public function findEntrees(int $page, int $limit): Paginator
     {
         $queryBuilder = $this->createQueryBuilder('r');
         $queryBuilder->andWhere('r.Categorie = 1');
         $queryBuilder->addOrderBy('r.Note', 'DESC');
         $query = $queryBuilder->getQuery();
 
-        $query->setMaxResults(10);
-        return $query->getResult();
+        $query->setFirstResult(($page-1) * $limit);
+        $query->setMaxResults($limit);
+        return new Paginator($query, true);
     }
 
-    public function findPlats()
+    public function findPlats(int $page, int $limit)
     {
         $queryBuilder = $this->createQueryBuilder('r');
         $queryBuilder->andWhere('r.Categorie = 2');
         $queryBuilder->addOrderBy('r.Note', 'DESC');
         $query = $queryBuilder->getQuery();
 
-        $query->setMaxResults(10);
-        return $query->getResult();
+        $query->setFirstResult(($page-1) * $limit);
+        $query->setMaxResults($limit);
+        return new Paginator($query, true);
     }
 
-    public function findDesserts()
+    public function findDesserts(int $page, int $limit)
     {
         $queryBuilder = $this->createQueryBuilder('r');
         $queryBuilder->andWhere('r.Categorie = 3');
         $queryBuilder->addOrderBy('r.Note', 'DESC');
         $query = $queryBuilder->getQuery();
 
-        $query->setMaxResults(10);
-        return $query->getResult();
+        $query->setFirstResult(($page-1) * $limit);
+        $query->setMaxResults($limit);
+        return new Paginator($query, true);
     }
 
     public function findRecipeById(int $id)

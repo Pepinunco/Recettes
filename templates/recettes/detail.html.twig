@@ -5,12 +5,12 @@
     <section class="detail-recette">
         <h1>{{ recette.nom }}</h1>
         <div><a href="{{ path('otherProfile', {'pseudo': recette.Auteur.pseudo })}}">Auteur : {{ recette.Auteur.pseudo}}</a></div>
-        <div>Note : {{ recette.note }}</div>
+        <div>Note : {{ recette.note ? recette.note|number_format(2)  : 'Pas encore de Note'}}</div>
         <div>
             Ingredients :
             <ul>
                 {% for ingredient in recette.ingredients %}
-                    <li>{{ ingredient.Ingredient.nom }}</li>
+                    <li>{{ ingredient.quantite}} {{ ingredient.Ingredient.Unite }} de {{ ingredient.Ingredient.nom }} </li>
                 {% endfor %}
             </ul>
         </div>
@@ -25,7 +25,19 @@
                 {% endfor %}
             </ul>
         </div>
+        <div>
+            {% if existingRating is null and app.user != recette.Auteur%}
+                <h2>Notez cette recette</h2>
+                {{ form_start(ratingForm) }}
+                {{ form_widget(ratingForm) }}
+                <button type="submit">Notez</button>
+                {{ form_end(ratingForm) }}
+            {% endif %}
+        </div>
     </section>
+    {% if app.user == recette.Auteur %}
+        <button><a href="{{ path('app_modifRecette', {'id': recette.Id}) }}"> Modifiée votre recette</a></button>
+    {% endif %}
 {% endblock %}
 
 

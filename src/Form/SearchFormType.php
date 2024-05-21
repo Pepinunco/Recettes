@@ -16,12 +16,13 @@ class SearchFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('searchTerm', TextType::class,['required'=>false])
+            ->add('searchTerm', TextType::class,['required'=>false, 'label'=>'Nom de la recette'])
             ->add('ingredientFilter', EntityType::class,[
                 'class'=> Ingredient::class,
                 'choice_label'=>'nom',
                 'placeholder'=>'Ingredient',
                 'required'=>false,
+                'label'=>'Ingredient',
             ])
         ;
     }

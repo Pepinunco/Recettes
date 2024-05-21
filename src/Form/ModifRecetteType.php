@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class RecetteType extends AbstractType
+class ModifRecetteType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -39,6 +39,12 @@ class RecetteType extends AbstractType
             ->add('Categorie', EntityType::class, [
                 'class' => Categorie::class,
                 'choice_label' => 'nom',
+            ])
+            ->add('Enregistrer', SubmitType::class,[
+                'label'=>'Enregistrer'
+            ])
+            ->add('Supprimer', SubmitType::class,[
+                'label'=>'Supprimer'
             ])
         ;
     }

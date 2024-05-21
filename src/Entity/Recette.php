@@ -45,22 +45,29 @@ class Recette
     /**
      * @var Collection<int, Commentaire>
      */
-    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'recette')]
+    #[ORM\OneToMany(targetEntity: Commentaire::class, mappedBy: 'recette',orphanRemoval: true, cascade: ["remove"])]
     private Collection $Commentaires;
 
     /**
      * @var Collection<int, RecetteIngredient>
      */
-    #[ORM\OneToMany(targetEntity: RecetteIngredient::class, mappedBy: 'recette', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: RecetteIngredient::class, mappedBy: 'recette', orphanRemoval: true, cascade: ["remove"])]
     private Collection $ingredients;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateCreated = null;
 
+    /**
+     * @var Collection<int, Ratings>
+     */
+    #[ORM\OneToMany(targetEntity: Ratings::class, mappedBy: 'Recette')]
+    private Collection $ratings;
+
     public function __construct()
     {
         $this->Commentaires = new ArrayCollection();
         $this->ingredients = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -233,6 +240,50 @@ class Recette
     {
         $this->dateCreated = $dateCreated;
 
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ratings>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Ratings $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setRecette($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Ratings $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getRecette() === $this) {
+                $rating->setRecette(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function updateNote(): static
+    {
+        $totalRatings = count($this->ratings);
+        if ($totalRatings > 0){
+            $sumRatings = array_reduce($this->ratings->toArray(), function ($sum, $rating){
+                return $sum + $rating->getValue();
+            }, 0);
+            $this->Note = $sumRatings/$totalRatings;
+        } else{
+            $this->Note = null;
+        }
         return $this;
     }
 }

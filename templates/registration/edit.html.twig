@@ -22,17 +22,14 @@
         <br>
     {{ form_row(editForm.pseudo) }}
     </div>
-    <div></div>
-    <section >
-        <button type="submit" class="btn">Enregistrer</button>
+
         <button><a href="{{ path('editPassword') }}">Modifier le mot de passe</a></button>
-        <form action="{{ path('delete_Utilisateur', {'id': user.id}) }}" method="post" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
-            <input type="hidden" name="_method" value="DELETE">
-            <button type="submit" class="btn btn-danger">Supprimer le compte</button>
-        </form>
-        <button onclick="window.location.href='{{ path('app_accueil') }}'" class="btn">Retour</button>
-    </section>
+
+    {{ form_widget(editForm.Enregistrer) }}
+    {{ form_widget(editForm.Supprimer) }}
     {{ form_end(editForm) }}
+    
+    <button><a href="{{ path('app_accueil') }}">Retour</a></button>
 
     <h2>Mes recettes</h2>
     {%for recette in user.recettes %}

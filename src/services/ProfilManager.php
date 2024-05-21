@@ -36,7 +36,7 @@ class ProfilManager
         $this->security = $security;
     }
 
-    public function editProfil(Utilisateur $user, UploadedFile $profilePictureFile=null)
+    public function editProfil(Utilisateur $user, UploadedFile $profilePictureFile=null, )
     {
         if ($profilePictureFile) {
             $newFileName = $this -> uploadProfilePicture ( $profilePictureFile, $user);
@@ -50,7 +50,7 @@ class ProfilManager
     }
 
 
-    private function uploadProfilePicture(UploadedFile $profilePictureFile, Utilisateur $user)
+    private function uploadProfilePicture(UploadedFile $profilePictureFile, Utilisateur $user, $ppDirectory)
     {
 
 

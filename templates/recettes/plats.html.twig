@@ -8,6 +8,23 @@
             <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
         {% endfor %}
     </section>
+    <section class="navigation">
+        {% if pageActuelle > 1 %}
+            <a href="{{ path('app_plats', {'page': pageActuelle - 1}) }}"> < </a>
+        {% endif %}
+
+        {% for page in 1..maxPages %}
+            {% if page == pageActuelle %}
+                <strong>{{ page }}</strong>
+            {% else %}
+                <a href="{{ path('app_plats', {'page': page}) }}">{{ page }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if pageActuelle < maxPages %}
+            <a href="{{ path('app_plats', {'page': pageActuelle+1}) }}"> > </a>
+        {% endif %}
+    </section>
 {% endblock %}
 
 

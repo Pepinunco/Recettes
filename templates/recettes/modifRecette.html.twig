@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block title %}Modifiée votre Recette{% endblock %}
+
+{% block body %}
+    {{ form_start(modifForm) }}
+    {{ form_widget(modifForm) }}
+    {{ form_end(modifForm) }}
+
+    <button><a href="{{ path('app_modifIngredients', {'id': recette.id}) }}">Modifiée les ingredients</a></button>
+{% endblock %}
+
+

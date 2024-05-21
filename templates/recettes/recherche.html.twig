@@ -4,6 +4,7 @@
 {% block body %}
 <h1>Recherche</h1>
     {{ form_start(searchForm) }}
+    {{ form_widget(searchForm) }}
     <button type="submit">Chercher</button>
     {{ form_end(searchForm) }}
 

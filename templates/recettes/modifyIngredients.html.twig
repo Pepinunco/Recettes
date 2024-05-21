@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %}Modifié vos Ingredients{% endblock %}
+
+{% block body %}
+    <div id="ingredient-container">
+        {% for ingredientForm in ingredientForms %}
+            {{ form_start(ingredientForm, {'attr': {'id': 'ingredient-form'}}) }}
+            <div class="ingredient-form">
+                {{ form_row(ingredientForm.Ingredient) }}
+                {{ form_row(ingredientForm.Quantite) }}
+                <button type="button" class="remove-ingredient">Enlever</button>
+            </div>
+        {% endfor %}
+    </div>
+    <input type="hidden" name="ingredientsData" id="ingredients-data">
+    <button type="button" id="add-ingredient">ajouter un ingredient</button>
+    <button type="submit">Enregistrer</button>
+
+    <script src="{{ asset('js/modifyIngredient.js') }}"></script>
+{% endblock %}
+
+

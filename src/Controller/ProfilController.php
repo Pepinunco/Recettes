@@ -34,6 +34,8 @@ class ProfilController extends AbstractController
         $form -> handleRequest ( $request );
 
         if ($form -> isSubmitted () && $form -> isValid ()) {
+            if ($form->getClickedButton() && 'Enregistrer' === $form->getClickedButton()->getName())
+            {
             $profilePictureFile = $form -> get ( 'profilePicture' ) -> getData ();
             try {
                 $profileManager -> editProfil ( $user, $profilePictureFile );
@@ -43,6 +45,16 @@ class ProfilController extends AbstractController
             } catch (FileException $e) {
                 $this -> addFlash ( 'error', ' Erreur de téléchargement de la photo: ' . $e -> getMessage () );
                 return $this -> redirectToRoute ( 'app_register' );
+            }
+            }
+            elseif ($form->getClickedButton() && 'Supprimer' === $form->getClickedButton()->getName())
+            {
+                try {
+                    $this->manager->deleteUtilisateur($user->getId());
+                    $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+                } catch (\Exception $e) {
+                    $this->addFlash('error', $e->getMessage());
+                }
             }
         }
         return $this -> render ( 'registration/edit.html.twig', [

@@ -41,7 +41,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Recette>
      */
-    #[ORM\OneToMany(targetEntity: Recette::class, mappedBy: 'Auteur', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Recette::class, mappedBy: 'Auteur', orphanRemoval: true, cascade: ["remove"])]
     private Collection $recettes;
 
     /**
@@ -53,10 +53,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $PhotoProfil = null;
 
+    /**
+     * @var Collection<int, Ratings>
+     */
+    #[ORM\OneToMany(targetEntity: Ratings::class, mappedBy: 'User')]
+    private Collection $ratings;
+
     public function __construct()
     {
         $this -> recettes = new ArrayCollection();
         $this -> commentaires = new ArrayCollection();
+        $this->ratings = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -214,6 +221,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPhotoProfil(?string $PhotoProfil): static
     {
         $this->PhotoProfil = $PhotoProfil;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ratings>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Ratings $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Ratings $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getUser() === $this) {
+                $rating->setUser(null);
+            }
+        }
 
         return $this;
     }

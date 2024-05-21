@@ -26,19 +26,23 @@ class ProfilController extends AbstractController
         $this->manager = $manager;
     }
 
-    #[Route("/editProfile", name: "edit")]
+    #[Route("/editProfile", name: "edit", methods: ['POST','GET'])]
     public function edit(Request $request,ProfilManager $profileManager): Response
     {
         $user = $this -> getUser ();
         $form = $this -> createForm ( EditFormType::class, $user );
         $form -> handleRequest ( $request );
+        $ppdirectory = $this -> getParameter ('profile_picture_directory');
+
+
+
 
         if ($form -> isSubmitted () && $form -> isValid ()) {
-            if ($form->getClickedButton() && 'Enregistrer' === $form->getClickedButton()->getName())
-            {
+            if($form->get('Enregistrer')->isClicked()){
+
             $profilePictureFile = $form -> get ( 'profilePicture' ) -> getData ();
             try {
-                $profileManager -> editProfil ( $user, $profilePictureFile );
+                $profileManager -> editProfil ( $user, $profilePictureFile, $ppdirectory );
 
                 $this -> addFlash ( 'sucess', 'Profil Modifié avec succès.' );
                 return $this -> redirectToRoute ( 'app_register' );
@@ -46,15 +50,15 @@ class ProfilController extends AbstractController
                 $this -> addFlash ( 'error', ' Erreur de téléchargement de la photo: ' . $e -> getMessage () );
                 return $this -> redirectToRoute ( 'app_register' );
             }
-            }
-            elseif ($form->getClickedButton() && 'Supprimer' === $form->getClickedButton()->getName())
-            {
+        }elseif ($form->get('Supprimer')->isClicked()){
                 try {
-                    $this->manager->deleteUtilisateur($user->getId());
+                    $this->manager->deleteUtilisateur($user);
                     $this->addFlash('success', 'Utilisateur supprimé avec succès.');
                 } catch (\Exception $e) {
                     $this->addFlash('error', $e->getMessage());
                 }
+
+                return $this->redirectToRoute('app_logout');
             }
         }
         return $this -> render ( 'registration/edit.html.twig', [
@@ -108,12 +112,12 @@ class ProfilController extends AbstractController
     public function deleteUtilisateur(int $id): Response
     {
         try {
-            $this->manager->deleteUtilisateur($id);
-            $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+            $this -> manager -> deleteUtilisateur ( $id );
+            $this -> addFlash ( 'success', 'Utilisateur supprimé avec succès.' );
         } catch (\Exception $e) {
-            $this->addFlash('error', $e->getMessage());
+            $this -> addFlash ( 'error', $e -> getMessage () );
         }
 
-        return $this->redirectToRoute('app_accueil');
+        return $this -> redirectToRoute ( 'app_accueil' );
     }
 }

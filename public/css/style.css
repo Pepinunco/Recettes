@@ -36,23 +36,52 @@ nav a {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+
 }
 
 
 /*************Profil*************/
 
+h1, h2{
+    text-align: center;
+}
 
+.profil-container{
+    display: flex;
+    justify-content: space-around;
 
-.photo{
-    position: absolute;
+}
+
+.form{
+    align-items: flex-start;
 }
 
 .photo img{
+    position: absolute;
+    align-items: flex-end;
     width: 150px;
 }
 
+.recette{
+    text-align: center;
+}
+
+.button{
+    align-items: center;
+}
+
+
 
 /***FOOTER***/
+.footer {
+    text-align: center;
+    background-color: var(--black);
+    color: var(--white);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+
+}
 /***************MAIN***************/
 
 

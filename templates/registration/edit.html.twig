@@ -16,25 +16,37 @@
         <img src="{{ asset('img/PhotoProfil/' ~ user.PhotoProfil) }}" alt="Photo de profil">
         </aside>
     {% endif %}
+    </div>
+        <div class="form">
     {{ form_row(editForm.profilePicture) }}
-    <br>
+
     {{ form_row(editForm.email) }}
         <br>
     {{ form_row(editForm.pseudo) }}
-    </div>
+
+
+
+    <section class="button">
 
         <button><a href="{{ path('editPassword') }}">Modifier le mot de passe</a></button>
-
-    {{ form_widget(editForm.Enregistrer) }}
-    {{ form_widget(editForm.Supprimer) }}
+        {{ form_widget(editForm.Supprimer) }}
+        {{ form_widget(editForm.Enregistrer) }}
+        <button onclick="window.location.href='{{ path('app_accueil') }}'" class="btn">Retour</button>
+    </section>
+        </div>
     {{ form_end(editForm) }}
-    
-    <button><a href="{{ path('app_accueil') }}">Retour</a></button>
-
+    </div>
+    <div class="recette">
     <h2>Mes recettes</h2>
-    {%for recette in user.recettes %}
-        <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
-    {% endfor %}
+
+        <div>
+        {%for recette in user.recettes %}
+            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+            <br>
+            <button><a href="{{ path('app_nouvelleRecette') }}">Ajouter une recette</a></button>
+        {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 
 {% block title %}

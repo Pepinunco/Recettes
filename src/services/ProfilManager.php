@@ -36,10 +36,10 @@ class ProfilManager
         $this->security = $security;
     }
 
-    public function editProfil(Utilisateur $user, UploadedFile $profilePictureFile=null, )
+    public function editProfil(Utilisateur $user, UploadedFile $profilePictureFile=null, $ppdirectory)
     {
         if ($profilePictureFile) {
-            $newFileName = $this -> uploadProfilePicture ( $profilePictureFile, $user);
+            $newFileName = $this -> uploadProfilePicture ( $profilePictureFile, $user, $ppdirectory);
             $user -> setPhotoProfil ( $newFileName );
         }
 
@@ -50,7 +50,7 @@ class ProfilManager
     }
 
 
-    private function uploadProfilePicture(UploadedFile $profilePictureFile, Utilisateur $user, $ppDirectory)
+    public function uploadProfilePicture(UploadedFile $profilePictureFile, Utilisateur $user, $ppdirectory)
     {
 
 
@@ -59,11 +59,11 @@ class ProfilManager
             $newFileName = $safeFileName . "-" . uniqid () . '.' .$profilePictureFile->guessExtension ();
             try {
                 $profilePictureFile->move (
-                    $this->getParameter('profile_picture_directory'),
+                    $ppdirectory,
                     $newFileName
                 );
                 if ($user->getPhotoProfil()) {
-                    $oldPhotoPath = $this->getParameter('photo_profil_directory') . '/' . $user->getPhotoProfil ();
+                    $oldPhotoPath = $ppdirectory . '/' . $user->getPhotoProfil ();
                     if ($this->filesystem->exists($oldPhotoPath)) {
                         $this->filesystem->remove ($oldPhotoPath);
                     }
@@ -89,16 +89,12 @@ class ProfilManager
         return $this->utilisateurRepository->findOneBy(['Pseudo' => $pseudo]);
     }
 
-    public function deleteUtilisateur(int $id): void
+    public function deleteUtilisateur(Utilisateur $user): void
     {
-        $user = $this->entityManager->getRepository (Utilisateur::class)->find ($id);
+
 
         if (!$user) {
             throw new \Exception('Utilisateur non trouvé.');
-        }
-
-        if (!$this->security->isGranted('DELETE', $user)) {
-            throw new AccessDeniedException('Accès refusé.');
         }
 
         $this->entityManager->remove($user);

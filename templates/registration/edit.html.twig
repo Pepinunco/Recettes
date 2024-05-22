@@ -7,34 +7,36 @@
 
     <h1>Mon profil</h1>
     <br>
-    <div>
-    {{ form_errors(editForm) }}
+    <div class="profil-container">
+        <div>
+        {{ form_errors(editForm) }}
 
-   {{ form_start(editForm, {'attr': {'enctype': 'multipart/form-data'}}) }}
-    {% if user.PhotoProfil %}
-        <aside class="photo">
-        <img src="{{ asset('img/PhotoProfil/' ~ user.PhotoProfil) }}" alt="Photo de profil">
-        </aside>
-    {% endif %}
-    </div>
-        <div class="form">
-    {{ form_row(editForm.profilePicture) }}
-
-    {{ form_row(editForm.email) }}
-        <br>
-    {{ form_row(editForm.pseudo) }}
-
-
-
-    <section class="button">
-
-        <button><a href="{{ path('editPassword') }}">Modifier le mot de passe</a></button>
-        {{ form_widget(editForm.Supprimer) }}
-        {{ form_widget(editForm.Enregistrer) }}
-        <button onclick="window.location.href='{{ path('app_accueil') }}'" class="btn">Retour</button>
-    </section>
+       {{ form_start(editForm, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        {% if user.PhotoProfil %}
+            <aside class="photo">
+            <img src="{{ asset('img/PhotoProfil/' ~ user.PhotoProfil) }}" alt="Photo de profil">
+            </aside>
+        {% endif %}
         </div>
-    {{ form_end(editForm) }}
+
+        <div class="form">
+        {{ form_row(editForm.profilePicture) }}
+
+        {{ form_row(editForm.email) }}
+            <br>
+        {{ form_row(editForm.pseudo) }}
+
+
+
+        <section class="button">
+
+            <button><a href="{{ path('editPassword') }}">Modifier le mot de passe</a></button>
+            {{ form_widget(editForm.Supprimer) }}
+            {{ form_widget(editForm.Enregistrer) }}
+            <button onclick="window.location.href='{{ path('app_accueil') }}'" class="btn">Retour</button>
+        </section>
+        </div>
+        {{ form_end(editForm) }}
     </div>
     <div class="recette">
     <h2>Mes recettes</h2>

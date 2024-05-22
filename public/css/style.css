@@ -10,7 +10,7 @@
 /***************BASE***************/
 /***HEADER***/
 header{
-    background-color: #99D45E;
+    background-color: var(--primaryLight);
     padding: 20px;
 }
 nav{
@@ -28,14 +28,20 @@ nav li {
 }
 
 nav a {
-    color: #3f3735;
+    color: var(--black);
     text-decoration: none;
 }
+
+nav a:hover {
+    text-decoration: underline;
+}
+
 /***MAIN***/
 .body-container {
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
+    text-align: center;
 
 }
 
@@ -46,10 +52,10 @@ h1, h2{
     text-align: center;
 }
 
-.profil-container{
+.profil-container {
     display: flex;
     justify-content: space-around;
-
+    align-items: inherit;
 }
 
 .form{
@@ -64,11 +70,10 @@ h1, h2{
 
 .recette{
     text-align: center;
+    padding-top: 10%;
 }
 
-.button{
-    align-items: center;
-}
+
 
 
 

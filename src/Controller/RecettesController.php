@@ -14,6 +14,8 @@ use App\Form\RecetteType;
 use App\Form\SearchFormType;
 use App\services\RecetteManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,187 +26,245 @@ class RecettesController extends AbstractController
 {
 
     private RecetteManager $manager;
+    private $logger;
 
-    public function __construct(RecetteManager $manager)
+    public function __construct(RecetteManager  $manager,
+                                LoggerInterface $logger)
     {
         $this->manager = $manager;
+        $this->logger = $logger;
     }
-    #[Route('/accueil', name: 'app_accueil')]
+    /**
+     * Affiche la page d'accueil avec les meilleures et les nouvelles recettes.
+     */
+    #[Route('/accueil', name: 'app_accueil', methods: ['GET'])]
     public function index(): Response
     {
-        $meilleuresRecettes = $this->manager->getBestRecipes();
-        $nouvellesRecettes = $this->manager->getNewestRecipes();
-
+        try {
+            $meilleuresRecettes = $this->manager->getBestRecipes();
+            $nouvellesRecettes = $this->manager->getNewestRecipes();
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'Error en recuperant les recettes']);
+        }
         return $this->render('recettes/index.html.twig', [
 
             'meilleuresRecettes' => $meilleuresRecettes,
-            'nouvellesRecettes'=>$nouvellesRecettes,
+            'nouvellesRecettes' => $nouvellesRecettes,
         ]);
     }
-
-    #[Route ('/entrees', name: 'app_entrees')]
+    /**
+     * Affiche les recettes de type 'Entrées' avec pagination.
+     */
+    #[Route ('/entrees', name: 'app_entrees', methods: ['GET'])]
     public function entrees(Request $request): Response
     {
-        $page = $request->query->getInt('page', 1);
-        $limit = 10;
-        $entrees = $this->manager->getEntrees($page,$limit);
-        $entreesTotal = $entrees->count();
-        $maxPages = ceil($entreesTotal/$limit);
-
-        return $this->render('recettes/entrees.html.twig',[
+        try {
+            $page = $request->query->getInt('page', 1);
+            $limit = 10;
+            $entrees = $this->manager->getEntrees($page, $limit);
+            $entreesTotal = $entrees->count();
+            $maxPages = ceil($entreesTotal / $limit);
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'Error en recuperant les entrees']);
+        }
+        return $this->render('recettes/entrees.html.twig', [
             'entrees' => $entrees,
-            'pageActuelle'=>$page,
-            'maxPages'=>$maxPages
+            'pageActuelle' => $page,
+            'maxPages' => $maxPages
         ]);
     }
-
-     #[Route ('/plats', name: 'app_plats')]
+    /**
+     * Affiche les recettes de type 'Plats' avec pagination.
+     */
+    #[Route ('/plats', name: 'app_plats', methods: ['GET'])]
     public function plats(Request $request): Response
     {
-        $page = $request->query->getInt('page', 1);
-        $limit = 1;
-        $plats = $this->manager->getPlats($page, $limit);
-        $total = $plats->count();
-        $maxPages = ceil($total/$limit);
-
-        return $this->render('recettes/plats.html.twig',[
+        try {
+            $page = $request->query->getInt('page', 1);
+            $limit = 10;
+            $plats = $this->manager->getPlats($page, $limit);
+            $total = $plats->count();
+            $maxPages = ceil($total / $limit);
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'Error en recuperant les plats']);
+        }
+        return $this->render('recettes/plats.html.twig', [
             'plats' => $plats,
-            'pageActuelle'=> $page,
-            'maxPages'=> $maxPages
+            'pageActuelle' => $page,
+            'maxPages' => $maxPages
         ]);
     }
-
-    #[Route ('/desserts', name: 'app_desserts')]
+    /**
+     * Affiche les recettes de type 'Desserts' avec pagination.
+     */
+    #[Route ('/desserts', name: 'app_desserts', methods: ['GET'])]
     public function desserts(Request $request): Response
     {
-        $page = $request->query->getInt('page', 1);
-        $limit = 1;
-        $desserts = $this->manager->getDesserts($page, $limit);
-        $total = $desserts->count();
-        $maxPages = ceil($total/$limit);
-
-        return $this->render('recettes/desserts.html.twig',[
+        try {
+            $page = $request->query->getInt('page', 1);
+            $limit = 10;
+            $desserts = $this->manager->getDesserts($page, $limit);
+            $total = $desserts->count();
+            $maxPages = ceil($total / $limit);
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'Error en recuperant les desserts']);
+        }
+        return $this->render('recettes/desserts.html.twig', [
             'desserts' => $desserts,
-            'pageActuelle'=> $page,
-            'maxPages'=> $maxPages
+            'pageActuelle' => $page,
+            'maxPages' => $maxPages
         ]);
     }
-
-    #[Route ('/detail/{id}', name: 'app_detail')]
-    public function detail(Recette $recette,EntityManagerInterface $entityManager, Request $request): Response
+    /**
+     * Affiche les détails d'une recette spécifique avec possibilité de noter la recette.
+     */
+    #[Route ('/detail/{id}', name: 'app_detail', methods: ['GET', 'POST'])]
+    public function detail(Recette $recette, EntityManagerInterface $entityManager, Request $request): Response
     {
-        $recetteData = $this->manager->getRecipeByName($recette);
-        if (!$recetteData)
-        {
-            throw $this->createNotFoundException('Recette introuvable');
-        }
-
-        $user = $this->getUser();
-        $existingRating = $this->manager->getExistingRating($user,$recette);
+        try {
+            $recetteData = $this->manager->getRecipeByName($recette);
+            if (!$recetteData) {
+                throw $this->createNotFoundException('Recette introuvable');
+            }
+            $user = $this->getUser();
+            $existingRating = $this->manager->getExistingRating($user, $recette);
             $rating = new Ratings();
-            $ratingForm = $this->createForm(RatingType::class,$rating);
-
-            $response = $this->manager->handleRatings($request,$user, $recette,$ratingForm, $rating);
-            if ($response){
+            $ratingForm = $this->createForm(RatingType::class, $rating);
+            $response = $this->manager->handleRatings($request, $user, $recette, $ratingForm, $rating);
+            if ($response) {
                 return $this->redirectToRoute('app_accueil');
             }
-
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'Error en recuperant les details de la recette']);
+        }
         return $this->render('recettes/detail.html.twig', [
             'recette' => $recetteData,
             'ratingForm' => $ratingForm->createView(),
-            'existingRating'=>$existingRating
+            'existingRating' => $existingRating
         ]);
     }
-
-    #[Route('/nouvelleRecette', name: 'app_nouvelleRecette')]
+    /**
+     * Affiche le formulaire pour ajouter une nouvelle recette.
+     */
+    #[Route('/nouvelleRecette', name: 'app_nouvelleRecette', methods: ['GET', 'POST'])]
     public function nouvelleRecette(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
-        $user = $this->getUser();
-        $recette = new Recette();
-        $recetteForm = $this->createForm(RecetteType::class, $recette);
-
-        if ($this->manager->handleRecipeForm($request,$recetteForm,$recette, $user))
-        {
-            return $this->redirectToRoute('app_ajoutIngredients', ['id'=>$recette->getId()]);
+        try {
+            $user = $this->getUser();
+            $recette = new Recette();
+            $recetteForm = $this->createForm(RecetteType::class, $recette);
+            if ($this->manager->handleRecipeForm($request, $recetteForm, $recette, $user)) {
+                return $this->redirectToRoute('app_ajoutIngredients', ['id' => $recette->getId()]);
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'Error en ajoutant la recette']);
         }
-
-        return  $this->render('recettes/nouvelleRecette.html.twig',
-            ['recetteForm'=> $recetteForm]);
+        return $this->render('recettes/nouvelleRecette.html.twig',
+            ['recetteForm' => $recetteForm]);
     }
-
-    #[Route('/ajoutIngredient/{id}', name: 'app_ajoutIngredients')]
+    /**
+     * Affiche le formulaire pour ajouter les ingrédients à une recette.
+     */
+    #[Route('/ajoutIngredient/{id}', name: 'app_ajoutIngredients', methods: ['GET', 'POST'])]
     public function ajoutIngredients(Recette $id, Request $request,): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
-        $recetteIngredient = new RecetteIngredient();
-        $ingredientForm = $this->createForm(RecetteIngredientType::class, $recetteIngredient);
-        $data = $this->manager->handleIngredientsForm($request, $ingredientForm, $id);
-
-        if ($data){
-
-            return $this->redirectToRoute('app_accueil');
+        try {
+            $recetteIngredient = new RecetteIngredient();
+            $ingredientForm = $this->createForm(RecetteIngredientType::class, $recetteIngredient);
+            $data = $this->manager->handleIngredientsForm($request, $ingredientForm, $id);
+            if ($data) {
+                return $this->redirectToRoute('app_accueil');
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'Error en ajoutant les ingredients']);
         }
-
         return $this->render('recettes/ajoutIngredients.html.twig',
-        ['ingredientForm'=>$ingredientForm->createView()]);
+            ['ingredientForm' => $ingredientForm->createView()]);
     }
-
-    #[Route ('/recherche', name: 'app_recherche')]
+    /**
+     * Affiche les résultats de la recherche de recettes.
+     */
+    #[Route ('/recherche', name: 'app_recherche', methods: ['GET', 'POST'])]
     public function recherche(Request $request): Response
     {
-        $searchDTO = new SearchDTO();
-        $searchForm = $this->createForm(SearchFormType::class, $searchDTO);
-
-        $recettes = $this->manager->handleSearchForm($request,$searchForm,$searchDTO);
-        if ($recettes){
+        try {
             $searchDTO = new SearchDTO();
             $searchForm = $this->createForm(SearchFormType::class, $searchDTO);
+            $recettes = $this->manager->handleSearchForm($request, $searchForm, $searchDTO);
+            if ($recettes) {
+                $searchDTO = new SearchDTO();
+                $searchForm = $this->createForm(SearchFormType::class, $searchDTO);
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'Error en recuperant les recettes']);
         }
         return $this->render('recettes/recherche.html.twig',
-            ['searchForm'=>$searchForm->createView(),
-                'recettes'=>$recettes
-        ]);
+            ['searchForm' => $searchForm->createView(),
+                'recettes' => $recettes
+            ]);
     }
-
-    #[Route ('/modifRecette/{id}', name: 'app_modifRecette')]
+    /**
+     * Affiche le formulaire pour modifier une recette existante.
+     */
+    #[Route ('/modifRecette/{id}', name: 'app_modifRecette', methods: ['GET', 'POST'])]
     public function modifRecette(Recette $recette, Request $request, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\RedirectResponse|Response
     {
-        $modifForm = $this->createForm(ModifRecetteType::class, $recette);
+        try {
+            $modifForm = $this->createForm(ModifRecetteType::class, $recette);
 
-        $response = $this->manager->handleModifRecette($request,$modifForm,$recette);
-        if ($response){
+            $response = $this->manager->handleModifRecette($request, $modifForm, $recette);
+            if ($response) {
 
-            return $this->redirectToRoute('app_accueil');
+                return $this->redirectToRoute('app_accueil');
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'Error en modifiant la recette']);
         }
-
-        return $this->render('recettes/modifRecette.html.twig',[
-            'modifForm'=>$modifForm->createView(),
-            'recette'=>$recette
+        return $this->render('recettes/modifRecette.html.twig', [
+            'modifForm' => $modifForm->createView(),
+            'recette' => $recette
         ]);
     }
-
-    #[Route('/modifIngredients/{id}', name: 'app_modifIngredients',methods: ['GET','POST'])]
-    public function modifIngredients(Recette $recette, Request $request,EntityManagerInterface $entityManager): Response
+    /**
+     * Affiche le formulaire pour modifier les ingrédients d'une recette existante.
+     */
+    #[Route('/modifIngredients/{id}', name: 'app_modifIngredients', methods: ['GET', 'POST'])]
+    public function modifIngredients(Recette $recette, Request $request, EntityManagerInterface $entityManager): Response
     {
-        $ingredientForms = [];
-        foreach ($recette->getIngredients() as $ingredient){
-            $ingredientForm = $this->createForm(RecetteIngredientType::class, $ingredient);
-            $ingredientForms[] = $ingredientForm->createView();
+        try {
+            $ingredientForms = [];
+            foreach ($recette->getIngredients() as $ingredient) {
+                $ingredientForm = $this->createForm(RecetteIngredientType::class, $ingredient);
+                $ingredientForms[] = $ingredientForm->createView();
+            }
+            $response = $this->manager->handleModifIngredients($request, $recette);
+            if ($response) {
+
+                return $this->redirectToRoute('app_accueil');
+            }
+        } catch (Exception $e) {
+            $this->logger->error("Error d'execution " . $e->getMessage());
+            return $this->render('bundles/TwigBundle/Exception/error.html.twig', ['message' => 'error en modifiant les ingredients']);
         }
-        $response = $this->manager->handleModifIngredients($request, $recette);
-        if ($response){
-
-            return $this->redirectToRoute('app_accueil');
-        }
-
-
-        return $this->render('recettes/modifyIngredients.html.twig',[
-            'ingredientForms'=>$ingredientForms
+        return $this->render('recettes/modifyIngredients.html.twig', [
+            'ingredientForms' => $ingredientForms
         ]);
     }
-
+    /**
+     * Récupère l'unité d'un ingrédient via une requête JSON.
+     */
     #[Route('/modifIngredients/getIngredientUnit/{id}', name: 'app_getingredientunit', methods: ['GET'])]
     public function getIngredientUnit(Ingredient $ingredient): JsonResponse
     {
-        return new JsonResponse(['unit'=>$ingredient->getUnite()]);
+        return new JsonResponse(['unit' => $ingredient->getUnite()]);
     }
 }

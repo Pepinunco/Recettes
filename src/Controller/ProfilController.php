@@ -50,8 +50,13 @@ class ProfilController extends AbstractController
             }
         }elseif ($form->get('Supprimer')->isClicked()){
                 try {
+                    // Appelle le gestionnaire pour supprimer l'utilisateur
                     $this->manager->deleteUtilisateur($user);
+
+                    // Invalide la session de l'utilisateur
                     $request->getSession()->invalidate();
+
+                    // Supprime le token de sécurité (déconnecte l'utilisateur)
                     $this->container->get('security.token_storage')->setToken(null);
                     $this->addFlash('success', 'Utilisateur supprimé avec succès.');
                     return $this->redirectToRoute('app_homepage');

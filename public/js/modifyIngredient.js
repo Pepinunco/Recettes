@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('select[name="recette_ingredient[Ingredient]"]').forEach(selectElement =>{
         selectElement.addEventListener('change', event=> {
             const ingredientId = event.target.value;
-            fetch(`getIngredientUnit/${ingredientId}`)
+            fetch(`http://localhost/Recettes/public/modifIngredients/getIngredientUnit/${ingredientId}`)
                 .then(response=>response.json() )
                 .then(data=>{
                     const quantiteInput = event.target.closest('.ingredient-form').querySelector('input[name="recette_ingredient[Quantite]"]');
@@ -70,7 +70,7 @@ function addNewIngredientForm(){
 
     newElement.querySelector('select[name="recette_ingredient[Ingredient]"]').addEventListener('change', event=>{
         const ingredientId = event.target.value;
-        fetch(`getIngredientUnit/${ingredientId}`)
+        fetch(`http://localhost/Recettes/public/modifIngredients/getIngredientUnit/${ingredientId}`)
             .then(response=>response.json())
             .then(data=>{
                 const quantiteInput = event.target.closest('.ingredient-form').querySelector('input[name="recette_ingredient[Quantite]"]');

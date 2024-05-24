@@ -3,16 +3,16 @@
 {% block title %}Accueil{% endblock %}
 
 {% block body %}
-    <section class="meilleures-recettes">
-        <h2>Meilleures Recettes</h2>
+        <h1>Meilleures Recettes</h1>
+    <section class="recettes-section">
         {% for recette in meilleuresRecettes %}
-            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+                <a class="recette-link" href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
         {% endfor %}
     </section>
-    <section class="nouvelles-recettes">
         <h2>Nouvelles Recettes</h2>
+    <section class="recettes-section">
         {% for recette in nouvellesRecettes %}
-            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+                <a class="recette-link" href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
         {% endfor %}
     </section>
 {% endblock %}

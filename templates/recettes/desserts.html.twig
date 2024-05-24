@@ -3,9 +3,9 @@
 
 {% block body %}
     <h1>Desserts</h1>
-    <section class="desserts">
+    <section class="recettes-section">
         {% for recette in desserts %}
-            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+            <a class="recette-link" href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
         {% endfor %}
     </section>
     <section class="navigation">

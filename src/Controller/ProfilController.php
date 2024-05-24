@@ -3,12 +3,11 @@
 namespace App\Controller;
 
 
-use App\Entity\Utilisateur;
 use App\Form\EditFormType;
 use App\Form\EditPasswordFormType;
-use App\Repository\UtilisateurRepository;
 use App\services\ProfilManager;
-use Doctrine\ORM\EntityManagerInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,11 +28,10 @@ class ProfilController extends AbstractController
     #[Route("/editProfile", name: "edit", methods: ['POST','GET'])]
     public function edit(Request $request,ProfilManager $profileManager): Response
     {
-        $user = $this -> getUser ();
+        $user = $this->getUser();
         $form = $this -> createForm ( EditFormType::class, $user );
         $form -> handleRequest ( $request );
         $ppdirectory = $this -> getParameter ('profile_picture_directory');
-
 
 
 
@@ -45,27 +43,31 @@ class ProfilController extends AbstractController
                 $profileManager -> editProfil ( $user, $profilePictureFile, $ppdirectory );
 
                 $this -> addFlash ( 'sucess', 'Profil Modifié avec succès.' );
-                return $this -> redirectToRoute ( 'app_register' );
+                return $this -> redirectToRoute ( 'app_accueil' );
             } catch (FileException $e) {
                 $this -> addFlash ( 'error', ' Erreur de téléchargement de la photo: ' . $e -> getMessage () );
-                return $this -> redirectToRoute ( 'app_register' );
+                return $this -> redirectToRoute ( 'app_accueil' );
             }
         }elseif ($form->get('Supprimer')->isClicked()){
                 try {
                     $this->manager->deleteUtilisateur($user);
+                    $request->getSession()->invalidate();
+                    $this->container->get('security.token_storage')->setToken(null);
                     $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+                    return $this->redirectToRoute('app_homepage');
                 } catch (\Exception $e) {
                     $this->addFlash('error', $e->getMessage());
-                }
+                } catch (NotFoundExceptionInterface $e) {
+                    $this->addFlash('error', $e->getMessage());
+                } catch (ContainerExceptionInterface $e) {
 
-                return $this->redirectToRoute('app_logout');
+                }
             }
         }
         return $this -> render ( 'registration/edit.html.twig', [
             'editForm' => $form -> createView (),
             'user' => $this -> getUser ()
         ] );
-
     }
 
     #[Route("/editPassword", name: "editPassword")]
@@ -104,20 +106,5 @@ class ProfilController extends AbstractController
         return $this->render('profil/other_profile_template.html.twig', [
             'utilisateur' => $utilisateur
         ]);
-
-    }
-
-
-    #[Route("deleteUtilisateur/{id}", name: 'delete_Utilisateur', methods:['POST', 'DELETE'])]
-    public function deleteUtilisateur(int $id): Response
-    {
-        try {
-            $this -> manager -> deleteUtilisateur ( $id );
-            $this -> addFlash ( 'success', 'Utilisateur supprimé avec succès.' );
-        } catch (\Exception $e) {
-            $this -> addFlash ( 'error', $e -> getMessage () );
-        }
-
-        return $this -> redirectToRoute ( 'app_accueil' );
     }
 }

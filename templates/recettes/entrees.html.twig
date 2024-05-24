@@ -3,9 +3,9 @@
 
 {% block body %}
     <h1>Entrees</h1>
-    <section class="entrees">
+    <section class="recettes-section">
         {% for recette in entrees %}
-            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+            <a class="recette-link" href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
         {% endfor %}
     </section>
 

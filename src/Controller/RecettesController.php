@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\DTO\SearchDTO;
+use App\Entity\Commentaire;
 use App\Entity\Ingredient;
 use App\Entity\Ratings;
 use App\Entity\Recette;
 use App\Entity\RecetteIngredient;
+use App\Form\CommentType;
 use App\Form\ModifRecetteType;
 use App\Form\RatingType;
 use App\Form\RecetteIngredientType;
@@ -14,6 +16,7 @@ use App\Form\RecetteType;
 use App\Form\SearchFormType;
 use App\services\RecetteManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\PersistentCollection;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -126,7 +129,9 @@ class RecettesController extends AbstractController
     public function detail(Recette $recette, EntityManagerInterface $entityManager, Request $request): Response
     {
         try {
-            $recetteData = $this->manager->getRecipeByName($recette);
+            $recetteData = $this->manager->getRecipeDetails($recette);
+            $comments = $recetteData->getCommentaires()->toArray();
+            shuffle($comments);
             if (!$recetteData) {
                 throw $this->createNotFoundException('Recette introuvable');
             }
@@ -134,8 +139,16 @@ class RecettesController extends AbstractController
             $existingRating = $this->manager->getExistingRating($user, $recette);
             $rating = new Ratings();
             $ratingForm = $this->createForm(RatingType::class, $rating);
-            $response = $this->manager->handleRatings($request, $user, $recette, $ratingForm, $rating);
-            if ($response) {
+            $ratingResponse = $this->manager->handleRatings($request, $user, $recette, $ratingForm, $rating);
+            if ($ratingResponse) {
+                return $this->redirectToRoute('app_accueil');
+            }
+
+            $existingComment = $this->manager->getExistingComment($user,$recette);
+            $commentaire = new Commentaire();
+            $commentForm = $this->createForm(CommentType::class,$commentaire);
+            $commentResponse = $this->manager->handleComment($request, $user, $recette, $commentForm, $commentaire);
+            if ($commentResponse){
                 return $this->redirectToRoute('app_accueil');
             }
         } catch (Exception $e) {
@@ -145,7 +158,10 @@ class RecettesController extends AbstractController
         return $this->render('recettes/detail.html.twig', [
             'recette' => $recetteData,
             'ratingForm' => $ratingForm->createView(),
-            'existingRating' => $existingRating
+            'existingRating' => $existingRating,
+            'comments'=>$comments,
+            'existingComment'=>$existingComment,
+            'commentForm' => $commentForm->createView()
         ]);
     }
     /**
@@ -197,6 +213,7 @@ class RecettesController extends AbstractController
         try {
             $searchDTO = new SearchDTO();
             $searchForm = $this->createForm(SearchFormType::class, $searchDTO);
+            $recettes = new Recette();
             $recettes = $this->manager->handleSearchForm($request, $searchForm, $searchDTO);
             if ($recettes) {
                 $searchDTO = new SearchDTO();
@@ -242,13 +259,17 @@ class RecettesController extends AbstractController
     {
         try {
             $ingredientForms = [];
-            foreach ($recette->getIngredients() as $ingredient) {
-                $ingredientForm = $this->createForm(RecetteIngredientType::class, $ingredient);
-                $ingredientForms[] = $ingredientForm->createView();
+            $ingredients = $recette->getIngredients();
+            if ($ingredients->count() === 0){
+             $ingredientForm = $this->createForm(RecetteIngredientType::class);
+             $ingredientForms[] = $ingredientForm->createView();
             }
+                foreach ($ingredients as $ingredient) {
+                    $ingredientForm = $this->createForm(RecetteIngredientType::class, $ingredient);
+                    $ingredientForms[] = $ingredientForm->createView();
+                }
             $response = $this->manager->handleModifIngredients($request, $recette);
             if ($response) {
-
                 return $this->redirectToRoute('app_accueil');
             }
         } catch (Exception $e) {

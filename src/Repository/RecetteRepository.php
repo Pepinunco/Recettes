@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Ingredient;
 use App\Entity\Recette;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -126,11 +127,11 @@ class RecetteRepository extends ServiceEntityRepository
      * Trouve les recettes par terme de recherche et/ou filtre d'ingrédient.
      *
      * @param string|null $searchTerm Le terme de recherche
-     * @param int|null $ingredientFilter L'ID du filtre d'ingrédient
+     * @param Ingredient|null $ingredientFilter L'ID du filtre d'ingrédient
      * @return mixed Les recettes correspondant aux critères de recherche
      */
     public function findRecipesBySearch(?string $searchTerm,
-                                        ?int $ingredientFilter): mixed
+                                        ?Ingredient $ingredientFilter): mixed
     {
         $queryBuilder = $this->createQueryBuilder('r');
         $queryBuilder->leftJoin('r.ingredients', 'ri');
@@ -141,7 +142,7 @@ class RecetteRepository extends ServiceEntityRepository
         }
         if ($ingredientFilter){
             $queryBuilder->andWhere('i.id = :ingredientId');
-            $queryBuilder->setParameter('ingredientId', $ingredientFilter);
+            $queryBuilder->setParameter('ingredientId', $ingredientFilter->getId());
         }
         return $queryBuilder->getQuery()->getResult();
     }

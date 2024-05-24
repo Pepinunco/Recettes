@@ -5,5 +5,7 @@
 {% block body %}
     <h1>Error</h1>
     <p>{{ message }}</p>
-    <a href="{{ path('app_accueil') }}">Retour a la page d'accueil</a>
+    <div class="form-buttons">
+        <a class="form-button" href="{{ path('app_accueil') }}">Retour a la page d'accueil</a>
+    </div>
 {% endblock %}

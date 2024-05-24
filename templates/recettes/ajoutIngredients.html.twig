@@ -2,17 +2,24 @@
 {% block title %}Ajout Ingredients{% endblock %}
 
 {% block body %}
+    <h1>Ajoutez des ingredients</h1>
     {{ form_start(ingredientForm, {'attr': {'id': 'ingredient-form'}})  }}
     <div id="ingredient-container">
-        <div class="ingredient-form">
-            {{ form_row(ingredientForm.Ingredient) }}
-            {{ form_row(ingredientForm.Quantite) }}
-            <button type="button" class="remove-ingredient">Enlever</button>
+        <div class="ingredient-form form-container">
+            <div class="form-row">
+                {{ form_label(ingredientForm.Ingredient) }}
+                {{ form_widget(ingredientForm.Ingredient, {'attr': {'class': 'input'}}) }}
+            </div>
+            <div class="form-row">
+                {{ form_label(ingredientForm.Quantite) }}
+                {{ form_widget(ingredientForm.Quantite, {'attr': {'class': 'input'}}) }}
+                <button type="button" class="remove-ingredient form-button remove-button">Enlever</button>
+            </div>
         </div>
     </div>
     <input type="hidden" name="ingredientsData" id="ingredients-data">
-    <button type="button" id="add-ingredient"> ajouter un ingredient </button>
-    <button type="submit"> Creer</button>
+    <button type="button" id="add-ingredient" class="form-button"> ajouter un ingredient </button>
+    <button type="submit" class="form-button"> Creer</button>
     {{ form_end(ingredientForm) }}
 
     <script src="{{ asset('js/modifyIngredient.js') }}"></script>

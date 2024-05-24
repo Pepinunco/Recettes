@@ -12,8 +12,11 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ProfilManager
@@ -25,8 +28,10 @@ class ProfilManager
     private UtilisateurRepository $utilisateurRepository;
     private Security $security;
 
+    private KernelInterface $kernel;
 
-    public function __construct(EntityManagerInterface $entityManager, Filesystem $filesystem, SluggerInterface $slugger, UserPasswordHasherInterface $passwordEncoder, UtilisateurRepository $utilisateurRepository, Security $security)
+
+    public function __construct(KernelInterface $kernel,EntityManagerInterface $entityManager, Filesystem $filesystem, SluggerInterface $slugger, UserPasswordHasherInterface $passwordEncoder, UtilisateurRepository $utilisateurRepository, Security $security)
     {
         $this->entityManager = $entityManager;
         $this->filesystem = $filesystem;
@@ -34,6 +39,7 @@ class ProfilManager
         $this->passwordEncoder = $passwordEncoder;
         $this->utilisateurRepository = $utilisateurRepository;
         $this->security = $security;
+        $this->kernel = $kernel;
     }
 
     public function editProfil(Utilisateur $user, UploadedFile $profilePictureFile=null, $ppdirectory)
@@ -100,4 +106,5 @@ class ProfilManager
         $this->entityManager->remove($user);
         $this->entityManager->flush();
     }
+
 }

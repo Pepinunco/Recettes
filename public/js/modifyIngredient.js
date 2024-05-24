@@ -12,9 +12,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     const quantiteInput = event.target.closest('.ingredient-form').querySelector('input[name="recette_ingredient[Quantite]"]');
                     quantiteInput.placeholder = data.unit;
                 });
+            validateForms();
         });
     });
-})
+    document.querySelectorAll('input[name="recette_ingredient[Quantite]"]').forEach(inputElement => {
+        inputElement.addEventListener('input', validateForms);
+    });
+
+    // Initial validation check
+    validateForms();
+});
+
+
 
 document.getElementById('ingredient-form').addEventListener("submit", (event)=> {
 
@@ -40,6 +49,7 @@ document.getElementById('ingredient-form').addEventListener("submit", (event)=> 
 
 document.getElementById('add-ingredient').addEventListener('click', () => {
     addNewIngredientForm();
+    validateForms();
 });
 
 document.querySelectorAll('.remove-ingredient').forEach(button=>{
@@ -65,8 +75,11 @@ function addNewIngredientForm(){
             .then(data=>{
                 const quantiteInput = event.target.closest('.ingredient-form').querySelector('input[name="recette_ingredient[Quantite]"]');
                 quantiteInput.placeholder = data.unit;
-            })
-    })
+            });
+        validateForms();
+    });
+    newElement.querySelector('input[name="recette_ingredient[Quantite]"]').addEventListener('input', validateForms);
+
     addRemoveButtonListener(newElement.querySelector('.remove-ingredient'));
     ingredientIndex++;
 }
@@ -74,5 +87,23 @@ function addNewIngredientForm(){
 function addRemoveButtonListener(button){
     button.addEventListener('click', (event)=>{
         event.target.closest('.ingredient-form').remove();
-    })
+        validateForms();
+    });
+}
+
+function validateForms(){
+    const forms = document.querySelectorAll('.ingredient-form');
+    let allValid = true;
+
+    forms.forEach(form => {
+        const ingredient = form.querySelector('select[name="recette_ingredient[Ingredient]"]').value;
+        const quantity = form.querySelector('input[name="recette_ingredient[Quantite]"]').value;
+
+        if (!ingredient || !quantity){
+            allValid = false;
+        }
+    });
+
+    const submitButton = document.querySelector('button[type="submit"]');
+    submitButton.disabled = !allValid;
 }

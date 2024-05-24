@@ -1,57 +1,50 @@
 {% extends 'base.html.twig' %}
-{% block stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('css/normalize.css') }}">
-{% endblock %}
 {% block body %}
-
     <h1>Mon profil</h1>
     <br>
     <div class="profil-container">
-        <div>
         {{ form_errors(editForm) }}
-
-       {{ form_start(editForm, {'attr': {'enctype': 'multipart/form-data'}}) }}
-        {% if user.PhotoProfil %}
-            <aside class="photo">
-            <img src="{{ asset('img/PhotoProfil/' ~ user.PhotoProfil) }}" alt="Photo de profil">
-            </aside>
-        {% endif %}
-        </div>
-
-        <div class="form">
-        {{ form_row(editForm.profilePicture) }}
-
-        {{ form_row(editForm.email) }}
-            <br>
-        {{ form_row(editForm.pseudo) }}
-
-
-
-        <section class="button">
-
-            <button><a href="{{ path('editPassword') }}">Modifier le mot de passe</a></button>
-            {{ form_widget(editForm.Supprimer) }}
-            {{ form_widget(editForm.Enregistrer) }}
-            <button onclick="window.location.href='{{ path('app_accueil') }}'" class="btn">Retour</button>
-        </section>
+        {{ form_start(editForm, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        <div class="profile-content">
+            {% if user.PhotoProfil %}
+                <aside class="photo">
+                    <img src="{{ asset('img/PhotoProfil/' ~ user.PhotoProfil) }}" alt="Photo de profil">
+                </aside>
+            {% endif %}
+            <section class="form-container">
+                <div class="form-row">
+                    {{ form_label(editForm.profilePicture) }}
+                    {{ form_widget(editForm.profilePicture) }}
+                </div>
+                <div class="form-row">
+                    {{ form_label(editForm.email) }}
+                    {{ form_widget(editForm.email, {'attr': {'class': 'input'}}) }}
+                </div>
+                <div class="form-row">
+                    {{ form_label(editForm.pseudo) }}
+                    {{ form_widget(editForm.pseudo, {'attr': {'class': 'input'}}) }}
+                </div>
+                <div class="form-buttons">
+                    <button class="form-button"><a href="{{ path('editPassword') }}">Modifier le mot de passe</a></button>
+                    {{ form_widget(editForm.Supprimer, {'attr': {'class': 'form-button'}}) }}
+                    {{ form_widget(editForm.Enregistrer, {'attr': {'class': 'form-button'}}) }}
+                    <button onclick="window.location.href='{{ path('app_accueil') }}'" class="form-button">Retour</button>
+                </div>
+            </section>
         </div>
         {{ form_end(editForm) }}
     </div>
     <div class="recette">
-    <h2>Mes recettes</h2>
-
-        <div>
-        {%for recette in user.recettes %}
-            <a href="{{path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
-            <br>
-            <button><a href="{{ path('app_nouvelleRecette') }}">Ajouter une recette</a></button>
-        {% endfor %}
-        </div>
+        <h2>Mes recettes</h2>
+        <section class="recettes-section">
+            {% for recette in user.recettes %}
+                <a class="recette-link" href="{{ path('app_detail', {'id': recette.id}) }}">{{ recette.nom }}</a>
+                <br>
+            {% endfor %}
+        </section>
+        <button class="form-button"><a href="{{ path('app_nouvelleRecette') }}">Ajouter une recette</a></button>
     </div>
 {% endblock %}
 
 {% block title %}
-
 {% endblock %}
-

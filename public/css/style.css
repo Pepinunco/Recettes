@@ -3,28 +3,39 @@
     --primary: #467F0E;
     --primaryLight: #99D45E;
     --white: #f4e0df;
-    --black:#3f3735;
+    --black: #1e1f22;
 }
 /***************GLOBAL***************/
+
+a{
+    text-decoration: none;
+    color: var(--black);
+}
+a :hover{
+    cursor: pointer;
+}
 
 /***************BASE***************/
 /***HEADER***/
 header{
     background-color: var(--primaryLight);
-    padding: 20px;
+    min-height: 40px;
+
 }
+
 nav{
-
+    display: flex;
+    max-height: 40px;
 }
-
 nav ul {
     display: flex;
     justify-content: space-around;
+    align-items: center;
+    width: 100%;
 }
 
 nav li {
     list-style-type: none;
-
 }
 
 nav a {
@@ -42,9 +53,20 @@ nav a:hover {
     flex-wrap: wrap;
     flex-direction: column;
     text-align: center;
-
+    min-height: 67vh;
 }
 
+/***FOOTER***/
+.footer {
+    text-align: center;
+    align-items: center;
+    background-color: var(--black);
+    color: var(--white);
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    padding: 9px;
+}
 
 /*************Profil*************/
 
@@ -54,39 +76,150 @@ h1, h2{
 
 .profil-container {
     display: flex;
-    justify-content: space-around;
-    align-items: inherit;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
 }
 
 .form{
     align-items: flex-start;
 }
 
-.photo img{
-    position: absolute;
-    align-items: flex-end;
-    width: 150px;
+.photo img {
+    max-width: 150px;
+    height: auto;
+    border-radius: 50%;
 }
 
 .recette{
     text-align: center;
-    padding-top: 10%;
 }
 
+/***************Reutilisables***************/
 
+.form-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 20px;
+}
 
-
-
-/***FOOTER***/
-.footer {
-    text-align: center;
-    background-color: var(--black);
-    color: var(--white);
-    position: absolute;
-    bottom: 0;
+.form-row{
+    display: flex;
+    max-width: 350px;
     width: 100%;
-
+    justify-content: space-between;
+    align-items: center;
 }
-/***************MAIN***************/
 
+.text-row{
+    display: flex;
+    flex-flow: column;
+    max-width: 350px;
+    width: 100%;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-radio{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.form-buttons{
+    display: flex;
+    gap: 10px;
+    margin: auto;
+}
+
+.form-button{
+    color: var(--black);
+    background-color: var(--primaryLight);
+    border: 1px solid var(--primary);
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 10px
+}
+
+.input{
+    padding: 5px;
+}
+
+.text-area-input{
+    min-width: 350px;
+    min-height: 100px;
+}
+
+#logo-div{
+    width: 100%;
+}
+
+#logo{
+    width: 150px;
+    margin: auto;
+    display: flex;
+}
+
+.recettes-section{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.recette-link{
+    width: 31%;
+    background-color: var(--primaryLight);
+    border: 1px solid var(--primary);
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.navigation{
+    position: relative;
+    bottom: 0;
+    margin-top: auto;
+}
+
+/*********Detail Recette*********/
+
+.detail-recette{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.detail-recette div{
+    max-width: 400px;
+}
+
+.detail-recette ul{
+    list-style: none;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    padding-inline-start: 0;
+}
+
+#recette-auteur{
+    color: var(--primary);
+    cursor: pointer;
+    text-decoration: underline;
+}
 

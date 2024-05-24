@@ -8,8 +8,21 @@
     {{ form_errors(registrationFormType) }}
 
     {{ form_start(registrationFormType) }}
-        {{ form_widget(registrationFormType)}}
+        <div class="form-container">
+            <div class="form-row">
+                {{ form_label(registrationFormType.email) }}
+                {{ form_widget(registrationFormType.email, {'attr': {'class': 'input'}}) }}
+            </div>
+            <div class="form-row">
+                {{ form_label(registrationFormType.pseudo) }}
+                {{ form_widget(registrationFormType.pseudo, {'attr': {'class': 'input'}}) }}
+            </div>
+            <div class="form-row">
+                {{ form_label(registrationFormType.plainPassword) }}
+                {{ form_widget(registrationFormType.plainPassword, {'attr': {'class': 'input'}}) }}
+            </div>
+        <button type="submit" class="form-button">Register</button>
+        </div>
 
-        <button type="submit" class="btn">Register</button>
     {{ form_end(registrationFormType) }}
 {% endblock %}

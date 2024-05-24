@@ -2,15 +2,37 @@
 {% block title %}Nouvelle Recette{% endblock %}
 
 {% block body %}
+    <h1>Crée votre recette</h1>
     {{ form_start(recetteForm) }}
-    {{ form_row(recetteForm.Nom) }}
-    {{ form_row(recetteForm.TempsPreparation) }}
-    {{ form_row(recetteForm.TempsCuisson) }}
-    {{ form_row(recetteForm.Portions) }}
-    {{ form_row(recetteForm.Instructions) }}
-    {{ form_row(recetteForm.Categorie) }}
+    <div class="form-container">
+        <div class="form-row">
+            {{ form_label(recetteForm.Nom) }}
+            {{ form_widget(recetteForm.Nom, {'attr': {'class': 'input'}}) }}
+        </div>
+        <div class="form-row">
+            {{ form_label(recetteForm.TempsPreparation) }}
+            {{ form_widget(recetteForm.TempsPreparation, {'attr': {'class': 'input'}} ) }}
+        </div>
+        <div class="form-row">
+            {{ form_label(recetteForm.TempsCuisson) }}
+            {{ form_widget(recetteForm.TempsCuisson, {'attr': {'class': 'input'}}) }}
+        </div>
+        <div class="form-row">
+            {{ form_label(recetteForm.Portions) }}
+            {{ form_widget(recetteForm.Portions, {'attr': {'class': 'input'}}) }}
+        </div>
+            {{ form_errors(recetteForm.Portions) }}
+        <div class="text-row">
+            {{ form_label(recetteForm.Instructions) }}
+            {{ form_widget(recetteForm.Instructions, {'attr': {'class': 'text-area-input'}}) }}
+        </div>
+        <div class="form-row">
+            {{ form_label(recetteForm.Categorie) }}
+            {{ form_widget(recetteForm.Categorie, {'attr': {'class': 'input'}}) }}
+        </div>
+    </div>
 
-    <button type="submit">Ajouter des ingredients</button>
+    <button type="submit" class="form-button">Ajouter des ingredients</button>
     {{ form_end(recetteForm) }}
 {% endblock %}
 

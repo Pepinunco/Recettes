@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{% block title %}Miam{% endblock %}</title>
-        <link rel="icon" href="{{ asset('img/miamIcon.png') }}">
-        {% block stylesheets %}
-            <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
-            <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        {% endblock %}
-    </head>
-    <body>
-        <header>
-            {% include 'inc/nav.html.twig' %}
-        </header>
-        <div class="body-container">
-        {% block body %}
-        {% endblock %}
-        </div>
-    <footer>
-        {% include 'inc/footer.html.twig' %}
-    </footer>
-    </body>
-    {% block javascripts %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}Miam{% endblock %}</title>
+    <link rel="icon" href="{{ asset('img/miamIcon.png') }}">
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     {% endblock %}
+</head>
+<body>
+<div id="logo-div">
+    <a href="{{ path('app_accueil') }}">
+        <img src="{{ asset('img/miamLogo.png') }}" alt="Miam" id="logo">
+    </a>
+</div>
+<header>
+    {% include 'inc/nav.html.twig' %}
+</header>
+<main class="body-container">
+    {% block body %}
+    {% endblock %}
+</main>
+<footer>
+    {% include 'inc/footer.html.twig' %}
+</footer>
+</body>
+{% block javascripts %}
+{% endblock %}
 </html>

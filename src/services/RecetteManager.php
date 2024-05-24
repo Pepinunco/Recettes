@@ -3,6 +3,7 @@
 namespace App\services;
 
 use App\DTO\SearchDTO;
+use App\Entity\Commentaire;
 use App\Entity\Ingredient;
 use App\Entity\Ratings;
 use App\Entity\Recette;
@@ -132,13 +133,13 @@ class RecetteManager
     }
 
     /**
-     * Récupère une recette par son nom.
+     * Récupère les details d'une recette
      *
      * @param Recette $recette L'objet Recette.
      *
      * @return Recette|null La recette correspondante ou null en cas d'erreur.
      */
-    public function getRecipeByName(Recette $recette): ?Recette
+    public function getRecipeDetails(Recette $recette): ?Recette
     {
         try {
         return $this->recetteRepository->findRecipeById($recette->getId());
@@ -341,7 +342,6 @@ class RecetteManager
             return null;
         }
     }
-
     /**
      * Gère la soumission du formulaire de rating d'une recette.
      *
@@ -373,6 +373,58 @@ class RecetteManager
         }
         }catch (Exception $e){
             $this->logger->error("Error ajoutant la note: ". $e->getMessage());
+        }
+        return false;
+    }
+    /**
+     * Récupère le commentaire existant pour une recette donnée par un utilisateur.
+     *
+     * @param UserInterface $user    L'utilisateur.
+     * @param Recette       $recette La recette.
+     *
+     * @return Commentaire|null Le commentaire existant ou null en cas d'erreur.
+     */
+    public function getExistingComment(UserInterface $user,
+                                      Recette $recette): ?Commentaire
+    {
+        try {
+            return $this->entityManager->getRepository(Commentaire::class)->findOneBy([
+                'Auteur'=> $user,
+                'recette'=>$recette
+            ]);
+        }catch (Exception $e){
+            $this->logger->error("Error recuperant le Rating existant: ". $e->getMessage());
+            return null;
+        }
+    }
+    /**
+     * Gère la soumission du formulaire de commentaires d'une recette.
+     *
+     * @param Request       $request     La requête HTTP.
+     * @param Utilisateur   $user        L'utilisateur.
+     * @param Recette       $recette     La recette.
+     * @param FormInterface $commentaireForm  Le formulaire de rating.
+     * @param Commentaire      $commentaire      L'objet Commentaire.
+     *
+     * @return bool true si le rating est ajouté avec succès, sinon false.
+     */
+    public function handleComment(Request $request,
+                                  Utilisateur $user,
+                                  Recette $recette,
+                                  FormInterface $commentaireForm,
+                                  Commentaire $commentaire ): bool
+    {
+        try {
+            $commentaireForm->handleRequest($request);
+            if ($commentaireForm->isSubmitted() && $commentaireForm->isValid()){
+                $commentaire->setRecette($recette);
+                $commentaire->setAuteur($user);
+                $this->entityManager->persist($commentaire);
+                $this->entityManager->flush();
+                return true;
+            }
+        }catch (Exception $e){
+            $this->logger->error("Error ajoutant le commentaire: ". $e->getMessage());
         }
         return false;
     }

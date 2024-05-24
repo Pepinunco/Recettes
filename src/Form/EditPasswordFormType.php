@@ -21,6 +21,7 @@ class EditPasswordFormType extends AbstractType
 
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
+                'label'=> 'Nouveau mot de passe',
                 'attr' => ['autocomplete' => 'new-password','class' => 'custom-class'],
                 'constraints' => [
                     new NotBlank([
@@ -36,6 +37,7 @@ class EditPasswordFormType extends AbstractType
             ])
             ->add('confirmPassword', PasswordType::class, [
                 'mapped' => false,
+                'label' => 'Confirmer le mot de passe',
                 'attr' => ['class' => 'custom-class'],
                 'constraints' => [
                     new Callback([$this, 'validatePassword'])

@@ -2,11 +2,43 @@
 {% block title %}Modifiée votre Recette{% endblock %}
 
 {% block body %}
+    <h1>Modifiée votre recette</h1>
     {{ form_start(modifForm) }}
-    {{ form_widget(modifForm) }}
+    <div class="form-container">
+        <div class="form-row">
+            {{ form_label(modifForm.Nom) }}
+            {{ form_widget(modifForm.Nom, {'attr': {'class': 'input'}}) }}
+        </div>
+        <div class="form-row">
+            {{ form_label(modifForm.TempsPreparation) }}
+            {{ form_widget(modifForm.TempsPreparation, {'attr': {'class': 'input'}}) }}
+        </div>
+        <div class="form-row">
+            {{ form_label(modifForm.TempsCuisson) }}
+            {{ form_widget(modifForm.TempsCuisson, {'attr': {'class': 'input'}}) }}
+        </div>
+        <div class="form-row">
+            {{ form_label(modifForm.Portions) }}
+            {{ form_widget(modifForm.Portions, {'attr': {'class': 'input'}}) }}
+        </div>
+        {{ form_errors(modifForm.Portions) }}
+        <div class="text-row">
+            {{ form_label(modifForm.Instructions) }}
+            {{ form_widget(modifForm.Instructions, {'attr': {'class': 'text-area-input'}}) }}
+        </div>
+        <div class="form-row">
+            {{ form_label(modifForm.Categorie) }}
+            {{ form_widget(modifForm.Categorie, {'attr': {'class': 'input'}}) }}
+        </div>
+        <div class="form-buttons">
+            {{ form_widget(modifForm.Enregistrer) }}
+            {{ form_widget(modifForm.Supprimer) }}
+        </div>
+    </div>
     {{ form_end(modifForm) }}
-
-    <button><a href="{{ path('app_modifIngredients', {'id': recette.id}) }}">Modifiée les ingredients</a></button>
+    <div class="form-buttons">
+        <button class="form-button"><a href="{{ path('app_modifIngredients', {'id': recette.id}) }}">Modifiér les ingredients</a></button>
+    </div>
 {% endblock %}
 
 
